@@ -1,0 +1,119 @@
+@model ComplaintMgtSystem.Models.Complaint
+
+@{
+    ViewData["Title"] = "Review complaint";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Complaint @Model.ComplaintNumber</p>
+            <h1>Review complaint</h1>
+            <p>Review the request details, update its status, and communicate with the submitter.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-outline-secondary">Back to complaint register</a>
+        </div>
+    </header>
+
+    <section class="card section-card mb-4" aria-labelledby="complaintHeading">
+        <div class="card-header d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <h2 id="complaintHeading" class="h5 mb-0">@Model.Subject</h2>
+            <partial name="_StatusBadge" model="Model.Status" />
+        </div>
+        <div class="card-body">
+            <div class="row g-3 mb-4">
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Complaint number</p><p class="detail-value">@Model.ComplaintNumber</p></div>
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Submitted by</p><p class="detail-value">@(Model.User?.Name ?? "Unknown")</p></div>
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Category</p><p class="detail-value">@(Model.Category?.Name ?? "Uncategorized")</p></div>
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Priority</p><p class="detail-value"><partial name="_PriorityBadge" model="Model.Priority" /></p></div>
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Submitted</p><p class="detail-value">@Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</p></div>
+                <div class="col-sm-6 col-lg-4"><p class="detail-label">Last updated</p><p class="detail-value">@Model.UpdatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</p></div>
+            </div>
+
+            <h3 class="h6 mb-2">Description</h3>
+            <div class="description-panel">@Model.Description</div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.AdminRemark))
+            {
+                <div class="mt-4">
+                    <h3 class="h6 mb-2">Saved administrator remark</h3>
+                    <div class="alert alert-info mb-0">@Model.AdminRemark</div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="card section-card mb-4" aria-labelledby="updateHeading">
+        <div class="card-header"><h2 id="updateHeading" class="h5 mb-0">Update complaint</h2></div>
+        <div class="card-body">
+            <form asp-controller="Complaint" asp-action="UpdateStatus" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="row g-3">
+                    <div class="col-lg-5">
+                        <label for="status" class="form-label">Complaint status <span class="required-mark" aria-hidden="true">*</span></label>
+                        <select id="status" name="status" class="form-select" required>
+                            <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                            <option value="In Progress" selected="@(Model.Status == "In Progress")">In progress</option>
+                            <option value="Resolved" selected="@(Model.Status == "Resolved")">Resolved</option>
+                            <option value="Closed" selected="@(Model.Status == "Closed")">Closed</option>
+                            <option value="Rejected" selected="@(Model.Status == "Rejected")">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label for="adminRemark" class="form-label">Administrator remark</label>
+                        <textarea id="adminRemark" name="adminRemark" class="form-control" rows="4" maxlength="1000" aria-describedby="remarkHint" placeholder="Add a note for the submitter. Leave blank to clear the saved remark."></textarea>
+                        <div id="remarkHint" class="field-hint">The saved remark is shown above. A new remark is stored with this update.</div>
+                    </div>
+                    <div class="col-12 d-flex flex-column flex-sm-row gap-2">
+                        <button type="submit" class="btn btn-primary">Save update</button>
+                        <a asp-action="AllComplaints" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="card section-card mb-4" aria-labelledby="historyHeading">
+        <div class="card-header"><h2 id="historyHeading" class="h5 mb-0">Status history</h2></div>
+        <div class="card-body">
+            @if (Model.StatusHistory.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table history-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Previous status</th>
+                                <th scope="col">New status</th>
+                                <th scope="col">Changed by</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var history in Model.StatusHistory.OrderBy(h => h.ChangedAt))
+                            {
+                                <tr>
+                                    <td>@(history.OldStatus ?? "—")</td>
+                                    <td>@history.NewStatus</td>
+                                    <td>@(history.ChangedByUser?.Name ?? "Unknown")</td>
+                                    <td class="text-nowrap">@history.ChangedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</td>
+                                    <td>@(history.Remark ?? "—")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state py-4"><p class="mb-0">No status changes have been recorded.</p></div>
+            }
+        </div>
+    </section>
+
+    <partial name="_ComplaintComments" model="Model" />
+</div>
+

@@ -1,0 +1,68 @@
+@model ComplaintMgtSystem.Models.Complaint
+
+<section class="card section-card" aria-labelledby="commentsHeading">
+    <div class="card-header d-flex justify-content-between align-items-center gap-3">
+        <h2 id="commentsHeading" class="h5 mb-0">Conversation</h2>
+        <span class="text-muted small">@Model.Comments.Count comment(s)</span>
+    </div>
+    <div class="card-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="status">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (Model.Comments.Any())
+        {
+            <div class="d-grid gap-3 mb-4">
+                @foreach (var item in Model.Comments.OrderBy(c => c.CreatedAt))
+                {
+                    <article class="comment-card @(item.User?.Role == "Admin" ? "comment-admin" : "")">
+                        <div class="comment-meta">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="comment-author">@(item.User?.Name ?? "Unknown user")</span>
+                                @if (item.User?.Role == "Admin")
+                                {
+                                    <span class="badge role-badge">Administrator</span>
+                                }
+                            </div>
+                            <time class="comment-time" datetime="@item.CreatedAt.ToString("O")">@item.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</time>
+                        </div>
+                        <p class="comment-content">@item.Comment</p>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-state py-4">
+                <h3 class="h6">No comments yet</h3>
+                <p class="mb-0">Add a comment to share an update or ask a follow-up question.</p>
+            </div>
+        }
+
+        <hr class="my-4" />
+        <h3 class="h6 mb-3">Add a comment</h3>
+        <form asp-controller="Complaint" asp-action="AddComment" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="complaintId" value="@Model.Id" />
+            <div class="mb-3">
+                <label for="comment-@Model.Id" class="form-label">Your message</label>
+                <textarea id="comment-@Model.Id" name="comment" class="form-control" rows="4" maxlength="1000" required aria-describedby="commentHint-@Model.Id" placeholder="Write an update or question..."></textarea>
+                <div id="commentHint-@Model.Id" class="field-hint">Maximum 1,000 characters.</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Post comment</button>
+        </form>
+    </div>
+</section>
+

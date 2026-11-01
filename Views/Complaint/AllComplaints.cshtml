@@ -1,0 +1,126 @@
+@model IEnumerable<ComplaintMgtSystem.Models.Complaint>
+
+@{
+    ViewData["Title"] = "Complaint register";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Administration</p>
+            <h1>Complaint register</h1>
+            <p>Search the register and review a request to update its progress.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Dashboard" asp-action="AdminDashboard" class="btn btn-outline-secondary">Back to overview</a>
+        </div>
+    </header>
+
+    <section class="card filter-card mb-4" aria-labelledby="filterHeading">
+        <div class="card-header">
+            <h2 id="filterHeading" class="h5 mb-0">Search and filters</h2>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Complaint" asp-action="AllComplaints" method="get">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-4 col-md-6">
+                        <label for="search" class="form-label">Complaint number or subject</label>
+                        <input type="search" id="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="e.g. CMP-2026-0001" />
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="">All statuses</option>
+                            <option value="Pending" selected="@(ViewBag.Status == "Pending")">Pending</option>
+                            <option value="In Progress" selected="@(ViewBag.Status == "In Progress")">In progress</option>
+                            <option value="Resolved" selected="@(ViewBag.Status == "Resolved")">Resolved</option>
+                            <option value="Closed" selected="@(ViewBag.Status == "Closed")">Closed</option>
+                            <option value="Rejected" selected="@(ViewBag.Status == "Rejected")">Rejected</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label for="categoryId" class="form-label">Category</label>
+                        <select id="categoryId" name="categoryId" class="form-select" asp-items="ViewBag.Categories">
+                            <option value="">All categories</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select id="priority" name="priority" class="form-select">
+                            <option value="">All priorities</option>
+                            <option value="Low" selected="@(ViewBag.Priority == "Low")">Low</option>
+                            <option value="Medium" selected="@(ViewBag.Priority == "Medium")">Medium</option>
+                            <option value="High" selected="@(ViewBag.Priority == "High")">High</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label for="fromDate" class="form-label">From date</label>
+                        <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+                    </div>
+                    <div class="col-lg-2 col-md-6">
+                        <label for="toDate" class="form-label">To date</label>
+                        <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+                    </div>
+                    <div class="col-12 filter-actions">
+                        <button type="submit" class="btn btn-primary">Apply filters</button>
+                        <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-outline-secondary">Clear filters</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="card" aria-labelledby="registerHeading">
+        <div class="card-header d-flex align-items-center justify-content-between gap-3">
+            <h2 id="registerHeading" class="h5 mb-0">Submitted complaints</h2>
+            <span class="text-muted small">@Model.Count() result(s)</span>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Complaint</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Submitted by</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Submitted</th>
+                            <th scope="col"><span class="visually-hidden">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var complaint in Model)
+                        {
+                            <tr>
+                                <td class="text-nowrap fw-semibold">@complaint.ComplaintNumber</td>
+                                <td>@complaint.Subject</td>
+                                <td>@(complaint.User?.Name ?? "Unknown")</td>
+                                <td>@(complaint.Category?.Name ?? "N/A")</td>
+                                <td><partial name="_PriorityBadge" model="complaint.Priority" /></td>
+                                <td><partial name="_StatusBadge" model="complaint.Status" /></td>
+                                <td class="text-nowrap">@complaint.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                                <td class="action-cell">
+                                    <a asp-controller="Complaint" asp-action="AdminDetails" asp-route-id="@complaint.Id" class="btn btn-sm btn-outline-primary">Review</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-mark" aria-hidden="true">⌕</div>
+                <h3 class="h5">No matching complaints</h3>
+                <p>Try adjusting the search terms or filters to find a complaint.</p>
+                <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-outline-secondary">Clear filters</a>
+            </div>
+        }
+    </section>
+</div>
+

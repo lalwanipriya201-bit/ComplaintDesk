@@ -1,0 +1,31 @@
+@model ErrorViewModel
+
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container">
+    <section class="card auth-card mx-auto my-4" aria-labelledby="errorHeading">
+        <div class="card-body text-center">
+            <div class="auth-brand-mark" aria-hidden="true">!</div>
+            <p class="eyebrow">Something went wrong</p>
+            <h1 id="errorHeading" class="h2">We could not complete that request</h1>
+            <p class="text-muted mt-3">An unexpected error occurred while processing your request. Please try again later.</p>
+
+            @if (Model.ShowRequestId)
+            {
+                <p class="small text-muted mb-0">Request ID: <code>@Model.RequestId</code></p>
+            }
+        </div>
+    </section>
+</div>
+
+@if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+{
+    <div class="container pb-4">
+        <div class="alert alert-warning" role="note">
+            <strong>Development environment:</strong> Detailed exception information may be available in the development logs. Avoid enabling Development mode on a deployed application because it can expose sensitive error details.
+        </div>
+    </div>
+}
+

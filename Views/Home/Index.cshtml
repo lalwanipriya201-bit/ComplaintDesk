@@ -1,0 +1,145 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container">
+    <section class="landing-hero mb-5" aria-labelledby="heroHeading">
+        <div class="row align-items-center g-4 g-lg-5">
+            <div class="col-lg-7">
+                <p class="eyebrow">Complaint Desk · Student support</p>
+                <h1 id="heroHeading" class="display-5 fw-bold mb-3">Your Voice Matters. We Make It Heard.</h1>
+                <p class="lead text-muted mb-4">
+                    Submit a concern, follow its progress, and keep the conversation and updates together in one place.
+                </p>
+                <div class="landing-hero-actions d-flex flex-column flex-sm-row gap-2">
+                    @if (User.IsInRole("User"))
+                    {
+                        <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit a Complaint</a>
+                    }
+                    else if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Open Complaint Register</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Submit a Complaint</a>
+                    }
+                    <a href="#about" class="btn btn-outline-secondary">Learn More</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <aside class="landing-highlight" aria-label="Complaint tracking overview">
+                    <p class="eyebrow mb-2">A clearer process</p>
+                    <h2 class="h4 mb-3">From first report to follow-up</h2>
+                    <ul class="landing-highlight-list list-unstyled mb-0">
+                        <li><span class="landing-check" aria-hidden="true">01</span><span>Share the issue with the relevant details.</span></li>
+                        <li><span class="landing-check" aria-hidden="true">02</span><span>Review status updates and administrator responses.</span></li>
+                        <li><span class="landing-check" aria-hidden="true">03</span><span>Keep comments and progress connected to the complaint.</span></li>
+                    </ul>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="landing-section mb-5" aria-labelledby="aboutHeading">
+        <div class="row align-items-start g-4">
+            <div class="col-lg-4">
+                <p class="eyebrow">About the service</p>
+                <h2 id="aboutHeading">A shared place to raise and follow concerns</h2>
+            </div>
+            <div class="col-lg-8">
+                <p class="text-muted mb-3">
+                    Complaint Desk is designed for academic settings where students need a clear way to report issues and administrators need a consistent way to review them.
+                </p>
+                <p class="text-muted mb-0">
+                    It brings complaint details, status history, administrator remarks, and follow-up comments together so people can understand what has been reported and what has happened next.
+                </p>
+                <a asp-controller="Home" asp-action="About" class="text-link mt-3 d-inline-block">Learn about the system <span aria-hidden="true">→</span></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="landing-section mb-5" aria-labelledby="howHeading">
+        <div class="landing-section-heading">
+            <p class="eyebrow">How it works</p>
+            <h2 id="howHeading">Three steps to keep a concern moving</h2>
+            <p class="text-muted">Each complaint has a record that students and administrators can refer to as it progresses.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <article class="landing-card h-100">
+                    <span class="landing-step-number" aria-hidden="true">01</span>
+                    <h3 class="h5">Submit Complaint</h3>
+                    <p class="text-muted mb-0">Describe the issue, choose a category, and set its priority.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="landing-card h-100">
+                    <span class="landing-step-number" aria-hidden="true">02</span>
+                    <h3 class="h5">Review and Track</h3>
+                    <p class="text-muted mb-0">Administrators review the details and update the complaint status as work progresses.</p>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="landing-card h-100">
+                    <span class="landing-step-number" aria-hidden="true">03</span>
+                    <h3 class="h5">Resolution and Feedback</h3>
+                    <p class="text-muted mb-0">Follow the recorded outcome and use the complaint conversation for relevant follow-up.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-section mb-5" aria-labelledby="featuresHeading">
+        <div class="landing-section-heading">
+            <p class="eyebrow">Built for clarity</p>
+            <h2 id="featuresHeading">Tools for students and administrators</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-sm-6 col-lg-3">
+                <article class="landing-feature h-100">
+                    <h3 class="h6">Easy Complaint Submission</h3>
+                    <p class="text-muted mb-0">A focused form captures the subject, description, category, and priority.</p>
+                </article>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <article class="landing-feature h-100">
+                    <h3 class="h6">Complaint Status Tracking</h3>
+                    <p class="text-muted mb-0">Students can review current statuses and the history of changes.</p>
+                </article>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <article class="landing-feature h-100">
+                    <h3 class="h6">Transparent Complaint Management</h3>
+                    <p class="text-muted mb-0">Administrators can review, update, and communicate about submitted complaints.</p>
+                </article>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+                <article class="landing-feature h-100">
+                    <h3 class="h6">Secure User Accounts</h3>
+                    <p class="text-muted mb-0">Sign-in and role-based access keep each workspace focused on its intended users.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="landing-cta d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3" aria-labelledby="ctaHeading">
+        <div>
+            <p class="eyebrow mb-2">Ready when you are</p>
+            <h2 id="ctaHeading" class="h4 mb-1">Make your concern easier to follow.</h2>
+            <p class="text-muted mb-0">Sign in or create an account to submit and track a complaint.</p>
+        </div>
+        @if (User.IsInRole("User"))
+        {
+            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit a Complaint</a>
+        }
+        else if (User.IsInRole("Admin"))
+        {
+            <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Open Complaint Register</a>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Create an Account</a>
+        }
+    </section>
+</div>

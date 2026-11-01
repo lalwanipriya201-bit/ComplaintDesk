@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Information</p>
+            <h1>Privacy Policy</h1>
+            <p>How Complaint Desk handles account and complaint information.</p>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="card surface-card" aria-labelledby="privacyIntroHeading">
+                <div class="card-body p-lg-4">
+                    <h2 id="privacyIntroHeading" class="h4">Introduction</h2>
+                    <p class="text-muted">
+                        Complaint Desk stores the information needed to create user accounts, submit complaints, and manage complaint progress. This page describes the data handled by the application as implemented in this project.
+                    </p>
+
+                    <h2 class="h4 mt-4">Information collected</h2>
+                    <p class="text-muted">The application can store:</p>
+                    <ul class="landing-list text-muted">
+                        <li>Account name, email address, role, account status, and account creation time.</li>
+                        <li>A password hash used to verify sign-in; the application does not store the submitted password as plain text.</li>
+                        <li>Complaint number, subject, description, category, priority, status, and submission and update times.</li>
+                        <li>Administrator remarks, comments added to the complaint conversation, and status history, including the account that made a status change and its time.</li>
+                    </ul>
+
+                    <h2 class="h4 mt-4">Why information is used</h2>
+                    <p class="text-muted">
+                        Account information is used to sign users in and apply role-based access. Complaint information is used to review and manage reports, show users the status and history of their own complaints, and support follow-up communication between users and administrators.
+                    </p>
+
+                    <h2 class="h4 mt-4">Storage, access, and security</h2>
+                    <p class="text-muted">
+                        The project uses SQLite. The database file location is determined by the application's connection-string configuration and deployment. Users can access their own complaints and related history; administrators have access to complaint and account management features. Passwords are stored as hashes.
+                    </p>
+                    <p class="text-muted mb-0">
+                        The application code does not implement encryption for the SQLite database file at rest. The system operator is responsible for protecting the database file, backups, hosting environment, and any deployment-specific security controls.
+                    </p>
+
+                    <h2 class="h4 mt-4">Retention and account deactivation</h2>
+                    <p class="text-muted mb-0">
+                        The project does not implement an automatic data-retention or deletion schedule. Deactivating an account prevents that account from signing in, but the account and its complaint records, comments, and status history remain in the system. Retention and any deletion must be handled by the system operator under the applicable institutional policy.
+                    </p>
+
+                    <h2 class="h4 mt-4">Contact</h2>
+                    <p class="text-muted mb-0">
+                        No administrator email address, phone number, or postal address is configured in this project. For questions about information in this system, contact the administrator responsible for your institution's Complaint Desk through its usual support channel.
+                    </p>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-4">
+            <aside class="landing-highlight" aria-labelledby="privacySummaryHeading">
+                <p class="eyebrow">At a glance</p>
+                <h2 id="privacySummaryHeading" class="h4">Your complaint record</h2>
+                <p class="text-muted mb-3">Complaint details and follow-up are kept together to support review and status tracking.</p>
+                <a asp-controller="Home" asp-action="Contact" class="text-link">Contact Us <span aria-hidden="true">→</span></a>
+            </aside>
+        </div>
+    </div>
+</div>

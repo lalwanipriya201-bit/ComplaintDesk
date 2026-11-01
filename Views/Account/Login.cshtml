@@ -1,0 +1,52 @@
+@model ComplaintMgtSystem.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign in";
+}
+
+<div class="container">
+    <div class="auth-wrap">
+        <section class="card auth-card" aria-labelledby="loginHeading">
+            <div class="card-body">
+                <div class="auth-brand-mark" aria-hidden="true">C</div>
+                <h1 id="loginHeading" class="h2 auth-heading">Welcome back</h1>
+                <p class="auth-intro">Sign in to follow your complaints and updates.</p>
+
+                <form asp-controller="Account" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+                    <div asp-validation-summary="ModelOnly" class="validation-summary-errors mb-3" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email address</label>
+                        <input asp-for="Email" class="form-control" placeholder="you@example.com" autocomplete="email" autofocus />
+                        <span asp-validation-for="Email" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label">Password</label>
+                        <input asp-for="Password" class="form-control" placeholder="Enter your password" autocomplete="current-password" />
+                        <span asp-validation-for="Password" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="form-check mb-4">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label">Keep me signed in</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                </form>
+
+                <p class="text-center mt-4 mb-0">New to Complaint Desk?
+                    <a asp-controller="Account" asp-action="Register">Create an account</a>
+                </p>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

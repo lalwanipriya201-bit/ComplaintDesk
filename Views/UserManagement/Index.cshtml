@@ -1,0 +1,175 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "User management";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Administration</p>
+            <h1>User management</h1>
+            <p>Search accounts and manage who can access the service desk.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Dashboard" asp-action="AdminDashboard" class="btn btn-outline-secondary">Back to overview</a>
+        </div>
+    </header>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="status">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <section class="card filter-card mb-4" aria-label="Search users">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3 align-items-end">
+                <div class="col-md-9">
+                    <label for="userSearch" class="form-label">Name or email</label>
+                    <input id="userSearch" type="search" name="search" value="@ViewBag.Search" class="form-control" placeholder="Search users..." />
+                </div>
+                <div class="col-md-3 filter-actions">
+                    <button type="submit" class="btn btn-primary flex-fill">Search</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="card" aria-labelledby="usersHeading">
+        <div class="card-header d-flex align-items-center justify-content-between gap-3">
+            <h2 id="usersHeading" class="h5 mb-0">Registered accounts</h2>
+            <span class="text-muted small">@Model.Count() account(s)</span>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Registered</th>
+                                <th scope="col">Account status</th>
+                                <th scope="col" class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                var isCurrentUser = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value == Convert.ToString(user.Id);
+                                <tr>
+                                    <td class="fw-semibold">@user.Name@(isCurrentUser ? " (you)" : "")</td>
+                                    <td>@user.Email</td>
+                                    <td><span class="badge role-badge">@user.Role</span></td>
+                                    <td class="text-nowrap">@(((DateTime)user.CreatedAt).ToLocalTime().ToString("dd MMM yyyy"))</td>
+                                    <td>
+                                        @if (user.IsActive)
+                                        {
+                                            <span class="badge account-active">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge account-inactive">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-end action-cell">
+                                        @if (user.IsActive && isCurrentUser)
+                                        {
+                                            <span class="text-muted small">Current account</span>
+                                        }
+                                        else if (user.IsActive)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deactivateUser-@user.Id" aria-label="Deactivate @user.Name">Deactivate</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#reactivateUser-@user.Id" aria-label="Reactivate @user.Name">Reactivate</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @foreach (var user in Model)
+            {
+                @if (user.IsActive && User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value != Convert.ToString(user.Id))
+                {
+                    <div class="modal fade" id="deactivateUser-@user.Id" tabindex="-1" aria-labelledby="deactivateUserLabel-@user.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title h5" id="deactivateUserLabel-@user.Id">Deactivate account?</h2>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Deactivate <strong>@user.Name</strong>?</p>
+                                    <p class="text-muted small mb-0">This account will no longer be able to sign in. The account and its complaint history will remain in the system.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form asp-action="Deactivate" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <button type="submit" class="btn btn-outline-danger">Deactivate account</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (!user.IsActive)
+                {
+                    <div class="modal fade" id="reactivateUser-@user.Id" tabindex="-1" aria-labelledby="reactivateUserLabel-@user.Id" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title h5" id="reactivateUserLabel-@user.Id">Reactivate account?</h2>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Restore sign-in access for <strong>@user.Name</strong>?</p>
+                                    <p class="text-muted small mb-0">The account's existing records will remain available.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <form asp-action="Reactivate" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                        <button type="submit" class="btn btn-outline-success">Reactivate account</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <div class="empty-state-mark" aria-hidden="true">⌕</div>
+                <h3 class="h5">No users found</h3>
+                <p>Try a different name or email address.</p>
+                <a asp-action="Index" class="btn btn-outline-secondary">Reset search</a>
+            </div>
+        }
+    </section>
+</div>
+

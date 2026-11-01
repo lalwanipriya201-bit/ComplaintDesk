@@ -1,0 +1,78 @@
+@model IEnumerable<ComplaintMgtSystem.Models.Complaint>
+
+@{
+    ViewData["Title"] = "My complaints";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Your requests</p>
+            <h1>My complaints</h1>
+            <p>Review the status and details of each request you submitted.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit a complaint</a>
+        </div>
+    </header>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (Model.Any())
+    {
+        <section class="card" aria-label="Complaint list">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Complaint</th>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Priority</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Submitted</th>
+                            <th scope="col"><span class="visually-hidden">Action</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var complaint in Model)
+                        {
+                            <tr>
+                                <td class="text-nowrap"><a asp-controller="Complaint" asp-action="Details" asp-route-id="@complaint.Id">@complaint.ComplaintNumber</a></td>
+                                <td>@complaint.Subject</td>
+                                <td>@(complaint.Category?.Name ?? "N/A")</td>
+                                <td>
+                                    <partial name="_PriorityBadge" model="complaint.Priority" />
+                                </td>
+                                <td>
+                                    <partial name="_StatusBadge" model="complaint.Status" />
+                                </td>
+                                <td class="text-nowrap">@complaint.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                                <td class="action-cell">
+                                    <a asp-controller="Complaint" asp-action="Details" asp-route-id="@complaint.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-3 px-md-4 py-3 border-top text-muted small">Showing @Model.Count() complaint(s).</div>
+        </section>
+    }
+    else
+    {
+        <section class="card empty-state">
+            <div class="empty-state-mark" aria-hidden="true">—</div>
+            <h2 class="h4">No complaints yet</h2>
+            <p>Your submitted complaints and their latest status will appear here.</p>
+            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit your first complaint</a>
+        </section>
+    }
+</div>
+

@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "About Us";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">About Complaint Desk</p>
+            <h1>A clearer way to manage concerns</h1>
+            <p>A shared process for raising issues, reviewing them, and following their progress in an academic setting.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-secondary">Contact Us</a>
+        </div>
+    </header>
+
+    <section class="card surface-card mb-4" aria-labelledby="introHeading">
+        <div class="card-body p-lg-4">
+            <p class="eyebrow">Our purpose</p>
+            <h2 id="introHeading" class="h3">Keep reports, updates, and follow-up in one place</h2>
+            <p class="text-muted mb-0">
+                Complaint Desk is an application for recording complaints and managing their progress. It gives students a place to describe a concern and lets administrators review the report, update its status, and communicate through its conversation and remarks.
+            </p>
+        </div>
+    </section>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <section class="landing-card h-100" aria-labelledby="problemsHeading">
+                <p class="eyebrow">Why it helps</p>
+                <h2 id="problemsHeading" class="h4">Problems the system aims to solve</h2>
+                <ul class="landing-list mb-0">
+                    <li>Reports scattered across conversations can be difficult to track.</li>
+                    <li>Students may not know whether a concern is pending, being reviewed, or resolved.</li>
+                    <li>Administrators need a consistent record of complaint details and status changes.</li>
+                    <li>Follow-up questions and responses are easier to understand when kept with the complaint.</li>
+                </ul>
+            </section>
+        </div>
+        <div class="col-lg-6">
+            <section class="landing-card h-100" aria-labelledby="objectivesHeading">
+                <p class="eyebrow">What it supports</p>
+                <h2 id="objectivesHeading" class="h4">Key objectives</h2>
+                <ul class="landing-list mb-0">
+                    <li>Make it straightforward to submit a complaint with useful details.</li>
+                    <li>Provide a visible status and a record of changes.</li>
+                    <li>Support clear communication between students and administrators.</li>
+                    <li>Give administrators tools to organize and review complaints.</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+
+    <section class="landing-section" aria-labelledby="benefitsHeading">
+        <div class="landing-section-heading">
+            <p class="eyebrow">A shared workspace</p>
+            <h2 id="benefitsHeading">Benefits for everyone involved</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <article class="landing-feature h-100">
+                    <h3 class="h5">For students</h3>
+                    <p class="text-muted mb-0">Submit concerns, see their current status, read administrator updates, and add follow-up comments to your own complaints.</p>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="landing-feature h-100">
+                    <h3 class="h5">For administrators</h3>
+                    <p class="text-muted mb-0">Review the complaint register, organize reports by category and status, and keep status history and communication with each record.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+</div>

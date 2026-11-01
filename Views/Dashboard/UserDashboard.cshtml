@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Member workspace</p>
+            <h1>Welcome, @User.Identity?.Name</h1>
+            <p>Submit an issue or check the latest information on a complaint you have raised.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit a complaint</a>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <section class="card action-card">
+                <div class="action-card-mark" aria-hidden="true">＋</div>
+                <h2 class="h4">Tell us about an issue</h2>
+                <p class="text-muted mb-4">Share the details and choose a category so the right team can review your complaint.</p>
+                <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary align-self-start">Start a complaint</a>
+            </section>
+        </div>
+        <div class="col-md-6">
+            <section class="card action-card">
+                <div class="action-card-mark" aria-hidden="true">↗</div>
+                <h2 class="h4">Follow your requests</h2>
+                <p class="text-muted mb-4">Review complaint status, updates, comments, and the history of each request.</p>
+                <a asp-controller="Complaint" asp-action="MyComplaints" class="btn btn-outline-primary align-self-start">View my complaints</a>
+            </section>
+        </div>
+    </div>
+</div>
+

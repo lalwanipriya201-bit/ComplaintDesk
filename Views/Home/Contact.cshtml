@@ -1,0 +1,130 @@
+@{
+    ViewData["Title"] = "Contact Us";
+    var isUser = User.IsInRole("User");
+    var isAdmin = User.IsInRole("Admin");
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Contact Us</p>
+            <h1>Get help with Complaint Desk</h1>
+            <p>Choose the route that best fits your question. Complaint updates stay with the complaint, while general system support is handled by your institution's administrator.</p>
+        </div>
+    </header>
+
+    <section class="landing-section mb-5" aria-labelledby="contactRoutesHeading">
+        <div class="landing-section-heading">
+            <p class="eyebrow">Support pathways</p>
+            <h2 id="contactRoutesHeading">Where to go next</h2>
+            <p class="text-muted">Use the system's existing complaint and account workflows to reach the right place.</p>
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6 col-xl-4">
+                <article class="landing-feature h-100 d-flex flex-column align-items-start">
+                    <p class="eyebrow">New concern</p>
+                    <h3 class="h5">Submit a complaint</h3>
+                    <p class="text-muted flex-grow-1">Describe the issue and choose a category so it can be reviewed in the complaint register.</p>
+                    @if (isUser)
+                    {
+                        <a asp-controller="Complaint" asp-action="Create" class="btn btn-primary">Submit a Complaint</a>
+                    }
+                    else if (isAdmin)
+                    {
+                        <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Open Complaint Register</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Sign in to Continue</a>
+                    }
+                </article>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <article class="landing-feature h-100 d-flex flex-column align-items-start">
+                    <p class="eyebrow">Existing concern</p>
+                    <h3 class="h5">Track or follow up</h3>
+                    <p class="text-muted flex-grow-1">Open a complaint to read its status history and continue the conversation with an administrator.</p>
+                    @if (isUser)
+                    {
+                        <a asp-controller="Complaint" asp-action="MyComplaints" class="btn btn-outline-secondary">View My Complaints</a>
+                    }
+                    else if (isAdmin)
+                    {
+                        <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-outline-secondary">Review Complaints</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary">Sign in to Follow Up</a>
+                    }
+                </article>
+            </div>
+            <div class="col-md-12 col-xl-4">
+                <article class="landing-feature h-100">
+                    <p class="eyebrow">Account or system help</p>
+                    <h3 class="h5">Contact your system administrator</h3>
+                    <p class="text-muted mb-0">
+                        This project does not provide a support email address, telephone number, or office address. For account access or general system questions, use the support channel provided by the institution operating this service.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <section class="card surface-card h-100" aria-labelledby="workflowHeading">
+                <div class="card-body p-lg-4">
+                    <p class="eyebrow">Complaint follow-up</p>
+                    <h2 id="workflowHeading" class="h3">Keep the conversation with your complaint</h2>
+                    @if (isUser)
+                    {
+                        <ol class="landing-list">
+                            <li>Open <strong>My complaints</strong> and select the complaint you want to discuss.</li>
+                            <li>Read the current status, administrator remarks, and previous comments.</li>
+                            <li>Add a comment on the complaint details page. The conversation is saved with that complaint.</li>
+                        </ol>
+                        <a asp-controller="Complaint" asp-action="MyComplaints" class="btn btn-primary">Go to My Complaints</a>
+                    }
+                    else if (isAdmin)
+                    {
+                        <ol class="landing-list">
+                            <li>Open the complaint register and select a complaint to review.</li>
+                            <li>Use its status update controls or conversation to respond.</li>
+                            <li>Changes and comments remain attached to the complaint record.</li>
+                        </ol>
+                        <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Go to Complaint Register</a>
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            Complaint conversations are available after sign-in. Open one of your complaints to read updates or add a follow-up comment; comments are saved with that complaint rather than sent as email.
+                        </p>
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Sign In</a>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-secondary">Create an Account</a>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-5">
+            <aside class="landing-highlight h-100" aria-labelledby="contactInfoHeading">
+                <p class="eyebrow">Contact the Support Team</p><br>
+                <dl class="row g-3 mb-3">
+                    <dt class="col-sm-4 detail-label">Email</dt>
+                    <dd class="col-sm-8 detail-value">helpdesk@example.com</dd>
+                    <dt class="col-sm-4 detail-label">Phone</dt>
+                    <dd class="col-sm-8 detail-value">+91 00000 00000</dd>
+                    <dt class="col-sm-4 detail-label">Office</dt>
+                    <dd class="col-sm-8 detail-value">Student Support Office, Main Campus, Building A</dd>
+                </dl>
+                <p class="alert alert-warning mb-3">
+                    These are dummy details for demonstration only. They do not reach an actual support team; replace them with approved contact information before deployment.
+                </p>
+                <p class="text-muted mb-0">
+                    When asking about a complaint, include its complaint number. Do not include your password or other sensitive account details in a complaint comment.
+                </p>
+            </aside>
+        </div>
+    </div>
+</div>

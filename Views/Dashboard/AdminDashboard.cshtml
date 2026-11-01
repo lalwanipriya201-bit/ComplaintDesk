@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Admin overview";
+}
+
+<div class="container">
+    <header class="page-header">
+        <div>
+            <p class="eyebrow">Administration</p>
+            <h1>Overview</h1>
+            <p>Monitor complaint volume and access the tools used to keep requests moving.</p>
+        </div>
+        <div class="header-actions">
+            <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Open complaint register</a>
+        </div>
+    </header>
+
+    <section aria-label="Complaint statistics" class="mb-4">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3">
+                <article class="card dashboard-stat">
+                    <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div><p class="stat-label">Total complaints</p><p class="stat-value">@ViewBag.TotalComplaints</p></div>
+                        <span class="stat-icon" aria-hidden="true">ALL</span>
+                    </div>
+                    <p class="stat-detail mb-0">All requests in the register</p>
+                </article>
+            </div>
+            <div class="col-6 col-lg-3">
+                <article class="card dashboard-stat">
+                    <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div><p class="stat-label">Pending</p><p class="stat-value">@ViewBag.PendingComplaints</p></div>
+                        <span class="stat-icon" aria-hidden="true">NEW</span>
+                    </div>
+                    <p class="stat-detail mb-0">Awaiting review</p>
+                </article>
+            </div>
+            <div class="col-6 col-lg-3">
+                <article class="card dashboard-stat">
+                    <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div><p class="stat-label">In progress</p><p class="stat-value">@ViewBag.InProgressComplaints</p></div>
+                        <span class="stat-icon" aria-hidden="true">WIP</span>
+                    </div>
+                    <p class="stat-detail mb-0">Being worked on</p>
+                </article>
+            </div>
+            <div class="col-6 col-lg-3">
+                <article class="card dashboard-stat">
+                    <div class="d-flex align-items-start justify-content-between gap-2">
+                        <div><p class="stat-label">Resolved</p><p class="stat-value">@ViewBag.ResolvedComplaints</p></div>
+                        <span class="stat-icon" aria-hidden="true">DONE</span>
+                    </div>
+                    <p class="stat-detail mb-0">Marked as resolved</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card-body">
+            <p class="eyebrow">Workspace tools</p>
+            <h2 class="h4 mb-2">Manage the service desk</h2>
+            <p class="text-muted mb-4">Review requests, keep complaint categories relevant, and manage account access.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="Complaint" asp-action="AllComplaints" class="btn btn-primary">Complaint register</a>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary">Manage categories</a>
+                <a asp-controller="UserManagement" asp-action="Index" class="btn btn-outline-secondary">Manage users</a>
+            </div>
+        </div>
+    </section>
+</div>
+

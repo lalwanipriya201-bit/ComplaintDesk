@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fdfcf8" />
+    <title>@ViewData["Title"] - Complaint Desk</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ComplaintMgtSystem.styles.css" asp-append-version="true" />
+</head>
+
+<body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        var isAdmin = User.IsInRole("Admin");
+        var isUser = User.IsInRole("User");
+        var accountInitial = string.IsNullOrWhiteSpace(User.Identity?.Name)
+            ? "A"
+            : User.Identity.Name.Substring(0, 1).ToUpperInvariant();
+        var isDashboardActive = string.Equals(currentController, "Dashboard", StringComparison.OrdinalIgnoreCase);
+        var isComplaintsActive = string.Equals(currentController, "Complaint", StringComparison.OrdinalIgnoreCase);
+        var isHomeActive = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase);
+        var isAboutActive = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, "About", StringComparison.OrdinalIgnoreCase);
+        var isContactActive = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, "Contact", StringComparison.OrdinalIgnoreCase);
+        var isPrivacyActive = string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentAction, "Privacy", StringComparison.OrdinalIgnoreCase);
+    }
+
+    <header class="site-header">
+        <nav class="navbar navbar-expand-xl site-navbar" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand brand-lockup" asp-controller="Home" asp-action="Index" aria-label="Complaint Desk home">
+                    <span class="brand-mark" aria-hidden="true">C</span>
+                    <span class="brand-copy">
+                        <span class="brand-name">Complaint Desk</span>
+                        <span class="brand-caption">Service portal</span>
+                    </span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation"
+                        aria-controls="primaryNavigation" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="primaryNavigation">
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+                        <li class="nav-item">
+                            <a class="nav-link @(isHomeActive ? "active" : "")" asp-controller="Home" asp-action="Index" aria-current="@(isHomeActive ? "page" : null)">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(isAboutActive ? "active" : "")" asp-controller="Home" asp-action="About" aria-current="@(isAboutActive ? "page" : null)">About Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(isContactActive ? "active" : "")" asp-controller="Home" asp-action="Contact" aria-current="@(isContactActive ? "page" : null)">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(isPrivacyActive ? "active" : "")" asp-controller="Home" asp-action="Privacy" aria-current="@(isPrivacyActive ? "page" : null)">Privacy Policy</a>
+                        </li>
+
+                        @if (isAdmin)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(isDashboardActive ? "active" : "")" asp-controller="Dashboard" asp-action="AdminDashboard" aria-current="@(isDashboardActive ? "page" : null)">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(isComplaintsActive ? "active" : "")" asp-controller="Complaint" asp-action="AllComplaints" aria-current="@(isComplaintsActive ? "page" : null)">Complaints</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(string.Equals(currentController, "Category", StringComparison.OrdinalIgnoreCase) ? "active" : "")" asp-controller="Category" asp-action="Index">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(string.Equals(currentController, "UserManagement", StringComparison.OrdinalIgnoreCase) ? "active" : "")" asp-controller="UserManagement" asp-action="Index">Users</a>
+                            </li>
+                        }
+                        else if (isUser)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @(isDashboardActive ? "active" : "")" asp-controller="Dashboard" asp-action="UserDashboard" aria-current="@(isDashboardActive ? "page" : null)">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(isComplaintsActive && (string.Equals(currentAction, "MyComplaints", StringComparison.OrdinalIgnoreCase) || string.Equals(currentAction, "Details", StringComparison.OrdinalIgnoreCase)) ? "active" : "")" asp-controller="Complaint" asp-action="MyComplaints">My complaints</a>
+                            </li>
+                            <li class="nav-item nav-item-action">
+                                <a class="btn btn-primary btn-sm" asp-controller="Complaint" asp-action="Create">Submit a complaint</a>
+                            </li>
+                        }
+                        else if (User.Identity?.IsAuthenticated != true)
+                        {
+                            <li class="nav-item nav-item-action">
+                                <a class="btn btn-outline-secondary btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+                            </li>
+                            <li class="nav-item nav-item-action">
+                                <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Create account</a>
+                            </li>
+                        }
+                    </ul>
+
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="account-area">
+                            <div class="account-avatar" aria-hidden="true">@accountInitial</div>
+                            <div class="account-copy">
+                                <span class="account-name">@User.Identity.Name</span>
+                                <span class="account-role">@(isAdmin ? "Administrator" : isUser ? "Member" : "Account")</span>
+                            </div>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="account-logout">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-quiet btn-sm">Sign out</button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="site-main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <span>© 2026 Complaint Desk</span>
+            <nav class="footer-links" aria-label="Footer navigation">
+                <a asp-controller="Home" asp-action="About">About Us</a>
+                <a asp-controller="Home" asp-action="Contact">Contact Us</a>
+                <a asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+            </nav>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
